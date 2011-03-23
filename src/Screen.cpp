@@ -110,10 +110,22 @@ void Screen::putchar_3x5(uint8_t x, uint8_t y, char c) {
 	}
 }
 
-void Screen::drawSprite01(uint8_t x, uint8_t y) {
+void Screen::drawSprite(uint8_t x, uint8_t y, uint8_t id) {
+	const uint8_t* sprite;
+	if (id == 0) {
+		sprite = sprite_00;
+	} else if (id == 1) {
+		sprite = sprite_01;
+	} else if (id == 2) {
+		sprite = sprite_02;
+	} else if (id == 3) {
+		sprite = sprite_03;
+	} else {
+		return;
+	}
 	uint8_t dots;
 	for (uint8_t row = 0; row < 8; row++) {
-		dots = pgm_read_byte_near(&sprite_01[row]);
+		dots = pgm_read_byte_near(&sprite[row]);
 		for (uint8_t col = 0; col < 8; col++) {
 			if (dots & (1 << col)) // only 7 rows.
 				plot(x + col, y + row, 1);
@@ -217,7 +229,7 @@ void Screen::doDraw() {
 ISR(TIMER1_OVF_vect) {
 	TCNT1 = __TIMER1_MAX - timer1_precharge;
 
-//	screen.doDraw();
+	//	screen.doDraw();
 
 }
 

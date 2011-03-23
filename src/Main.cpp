@@ -65,9 +65,19 @@ void loop() {
 	if (now - t1 > t1out) {
 		t1 = now;
 
+		static byte a;
+
 		//screen.clear();
 		//screen.putchar_4x7(11, 0, car);
-		screen.drawSprite01(X_MAX - 8, 0);
+		if (a == 4)
+			screen.putchar_3x5(X_MAX - 8, 0, '2');
+		else if (a == 5)
+			screen.putchar_4x7(X_MAX - 8, 0, '8');
+		else
+			screen.drawSprite(X_MAX - 8, 0, a);
+
+		if (++a >= 6)
+			a = 0;
 
 	}
 

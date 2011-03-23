@@ -21,7 +21,7 @@ public:
 	void shiftLeft();
 	void shiftRight();
 	void doDraw();
-	void drawSprite01(uint8_t x,uint8_t y);
+	void drawSprite(uint8_t x,uint8_t y, uint8_t id);
 	void clear();
 	void plot(uint8_t x, uint8_t y, uint8_t val);
 	void putchar_3x5(uint8_t x, uint8_t y, char c);
