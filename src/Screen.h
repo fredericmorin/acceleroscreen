@@ -24,8 +24,8 @@ public:
 	void drawSprite(uint8_t x,uint8_t y, uint8_t id);
 	void clear();
 	void plot(uint8_t x, uint8_t y, uint8_t val);
-	void putchar_3x5(uint8_t x, uint8_t y, char c);
-	void putchar_4x7(uint8_t x, uint8_t y, char c);
+	void putchar_3x5(uint8_t x, uint8_t y, uint8_t c);
+	void putchar_4x7(uint8_t x, uint8_t y, uint8_t c);
 
 };
 

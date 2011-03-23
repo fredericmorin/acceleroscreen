@@ -89,7 +89,7 @@ void Screen::clear() {
 		shadowram[i] = 0;
 }
 
-void Screen::putchar_3x5(uint8_t x, uint8_t y, char c) {
+void Screen::putchar_3x5(uint8_t x, uint8_t y, uint8_t c) {
 	uint8_t dots;
 	if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')) {
 		c &= 0x1F; // A-Z maps to 1-26
@@ -99,7 +99,7 @@ void Screen::putchar_3x5(uint8_t x, uint8_t y, char c) {
 	} else if (c == ' ') {
 		c = 10; // space
 	}
-	for (char col = 0; col < 3; col++) {
+	for (uint8_t col = 0; col < 3; col++) {
 		dots = pgm_read_byte_near(&font_3x5[c][col]);
 		for (uint8_t row = 0; row < 5; row++) {
 			if (dots & (16 >> row)) // only 5 rows.
@@ -135,7 +135,7 @@ void Screen::drawSprite(uint8_t x, uint8_t y, uint8_t id) {
 	}
 }
 
-void Screen::putchar_4x7(byte x, byte y, char c) {
+void Screen::putchar_4x7(byte x, byte y, uint8_t c) {
 	uint8_t dots;
 	if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')) {
 		c &= 0x1F; // A-Z maps to 1-26
