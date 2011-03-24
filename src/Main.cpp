@@ -8,8 +8,6 @@
 #define LCDDISPLAY 0
 #define ADC_ENABLE 1
 
-#include "config.h"
-
 #include "AnalogReader.h"
 #include "Screen.h"
 #include "utils.h"
@@ -74,8 +72,8 @@ void loop() {
 	if (now - t3 > (1000 / ACCEL_READ_RATE /* Hz */)) {
 		t3 = now;
 
-		long row = maplimit(accx.getInt(), -1000, 1000, 0, ROWS - 1);
-		long col = maplimit(-accy.getInt(), -1000, 1000, 0, COLS - 1);
+		long col = maplimit(-accy.getInt(), -1000, 1000, 0, X_MAX);
+		long row = maplimit(accx.getInt(), -1000, 1000, 0, Y_MAX);
 
 		if (lastrow != row || lastcol != col) {
 			screen.plot(lastcol, lastrow, 0);

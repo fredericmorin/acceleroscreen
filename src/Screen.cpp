@@ -9,7 +9,6 @@
 
 #include "WProgram.h"
 
-#include "config.h"
 #include "fonts.h"
 #include "utils.h"
 
@@ -71,12 +70,12 @@ void Screen::write(uint8_t c) {
 void Screen::shiftLeft() {
 	for (uint8_t panel_x = 0; panel_x < panel_count_x; panel_x++) {
 		if (panel_x == 0) {
-			for (uint8_t row = 0; row < ROWS; row++) {
+			for (uint8_t row = 0; row < ROWS_PER_PANEL; row++) {
 				shadowram[row] >>= 1;
 			}
 		} else {
 			uint8_t offset = panel_x * 8;
-			for (uint8_t row = 0; row < ROWS; row++) {
+			for (uint8_t row = 0; row < ROWS_PER_PANEL; row++) {
 				shadowram[offset - 8 + row] |= //
 						(shadowram[offset + row] & B00000001) << 7;
 				shadowram[offset + row] >>= 1;
@@ -249,7 +248,7 @@ ISR(TIMER1_OVF_vect) {
 	__SPI_LATCH_HIGH;
 
 	row++; // next time the ISR runs, the next row will be dealt with
-	if (row >= ROWS) {
+	if (row >= ROWS_PER_PANEL) {
 		row = 0;
 	}
 
