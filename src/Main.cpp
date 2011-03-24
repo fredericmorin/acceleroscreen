@@ -6,7 +6,7 @@
 
 // features
 #define LCDDISPLAY 0
-#define ADC_ENABLE 0
+#define ADC_ENABLE 1
 
 #include "config.h"
 
@@ -29,9 +29,11 @@ LiquidCrystal lcd(7, 6, 5, 4, 3, 2);
 
 // config
 #if ADC_ENABLE
-#define ACCEL_READ_RATE    100 // Hz
-AnalogReader accx(7, -8.0, 8.0);
-AnalogReader accy(6, -8.0, 8.0);
+#define ACCEL_READ_RATE    200 // Hz
+AnalogReader accx(2, -8.0, 8.0);
+AnalogReader accy(1, -8.0, 8.0);
+#endif
+#if 0
 AnalogReader batt(0, 0, 15.6);
 #endif
 Screen screen(SCK, SS, MOSI, 9); // clk, lat, dat, en
@@ -72,17 +74,17 @@ void loop() {
 	if (now - t3 > (1000 / ACCEL_READ_RATE /* Hz */)) {
 		t3 = now;
 
-		long row = maplimit(-accx.getInt(), -800, 800, 0, __rows - 1);
-		long col = maplimit(-accy.getInt(), -800, 800, 0, __cols - 1);
+		long row = maplimit(accx.getInt(), -1000, 1000, 0, ROWS - 1);
+		long col = maplimit(-accy.getInt(), -1000, 1000, 0, COLS - 1);
 
 		if (lastrow != row || lastcol != col) {
-			screen.plot(lastrow, lastcol, 0);
+			screen.plot(lastcol, lastrow, 0);
 			lastrow = row;
 			lastcol = col;
 		}
 
 	}
-	screen.plot(lastrow, lastcol, 1);
+	screen.plot(lastcol, lastrow, 1);
 #endif
 
 #if LCDDISPLAY
