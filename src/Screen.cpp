@@ -179,7 +179,7 @@ void Screen::putchar_4x7(byte x, byte y, uint8_t c) {
 	}
 }
 
-void Screen::setup_hardware_spi(void) {
+inline void Screen::setup_hardware_spi(void) {
 	byte clr;
 	// spi prescaler:
 	// SPI2X SPR1 SPR0
@@ -202,11 +202,9 @@ void Screen::setup_hardware_spi(void) {
 
 // display refresh rate
 #define __TIMER1_MAX 0xFFFF // 16 bit CTR
-volatile uint32_t timer1_precharge = 0x60;
-volatile uint32_t timer1_timer = 0;
-volatile uint16_t timer1_exec = 0;
+const uint32_t timer1_precharge = 0x60;
 
-void Screen::setup_timer1_ovf(void) {
+inline void Screen::setup_timer1_ovf(void) {
 	// Arduino runs at 16 Mhz...
 	// Timer1 (16bit) Settings:
 	// prescaler (frequency divider) values:
@@ -232,9 +230,6 @@ void Screen::setup_timer1_ovf(void) {
 }
 
 ISR(TIMER1_OVF_vect) {
-	uint8_t oldSREG = SREG;
-	cli();
-
 	// reset timer
 	TCNT1 = __TIMER1_MAX - timer1_precharge;
 
@@ -251,7 +246,5 @@ ISR(TIMER1_OVF_vect) {
 	if (row >= ROWS_PER_PANEL) {
 		row = 0;
 	}
-
-	SREG = oldSREG;
 }
 
