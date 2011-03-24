@@ -88,8 +88,6 @@ void loop() {
 
 	}
 
-	screen.doDraw();
-
 #if ADC_ENABLE
 	if (now - t3 > t3out) {
 		t3 = now;

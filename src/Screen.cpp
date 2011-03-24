@@ -14,9 +14,7 @@
 #include "utils.h"
 
 #include <avr/pgmspace.h>
-
-#define SHADOW_SIZE COLS
-volatile uint8_t shadowram[SHADOW_SIZE]; // our copy of the display's RAM
+#include <util/delay.h>
 
 #if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
 #ERROR not supported
@@ -26,6 +24,9 @@ volatile uint8_t shadowram[SHADOW_SIZE]; // our copy of the display's RAM
 #endif
 
 Screen::Screen(uint8_t clock, uint8_t latch, uint8_t data, uint8_t enable) {
+#define SHADOW_SIZE (8 * panel_count) // 8 row per panel, 1 byte per row
+volatile uint8_t shadowram[SHADOW_SIZE]; // our copy of the display's RAM
+
 	// 13, 10, 11, 9
 	pinMode(latch, OUTPUT);
 	pinMode(clock, OUTPUT);
@@ -38,8 +39,8 @@ Screen::Screen(uint8_t clock, uint8_t latch, uint8_t data, uint8_t enable) {
 	clear();
 
 	setup_hardware_spi();
-	//delay(20);
-	//setup_timer1_ovf();
+	_delay_ms(20);
+	setup_timer1_ovf();
 
 }
 
@@ -178,7 +179,7 @@ void Screen::setup_hardware_spi(void) {
 
 // display refresh rate
 #define __TIMER1_MAX 0xFFFF // 16 bit CTR
-volatile uint32_t timer1_precharge = 0x05;
+volatile uint32_t timer1_precharge = 0x60;
 volatile uint32_t timer1_timer = 0;
 volatile uint16_t timer1_exec = 0;
 
@@ -207,7 +208,12 @@ void Screen::setup_timer1_ovf(void) {
 	sei();
 }
 
-void Screen::doDraw() {
+ISR(TIMER1_OVF_vect) {
+	uint8_t oldSREG = SREG;
+	cli();
+
+	// reset timer
+	TCNT1 = __TIMER1_MAX - timer1_precharge;
 
 	static uint8_t row;
 
@@ -223,12 +229,6 @@ void Screen::doDraw() {
 		row = 0;
 	}
 
-}
-
-ISR(TIMER1_OVF_vect) {
-	TCNT1 = __TIMER1_MAX - timer1_precharge;
-
-	//	screen.doDraw();
-
+	SREG = oldSREG;
 }
 

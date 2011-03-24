@@ -20,7 +20,6 @@ public:
 	Screen(uint8_t clock, uint8_t latch, uint8_t data, uint8_t enable);
 	void shiftLeft();
 	void shiftRight();
-	void doDraw();
 	void drawSprite(uint8_t x,uint8_t y, uint8_t id);
 	void clear();
 	void plot(uint8_t x, uint8_t y, uint8_t val);
