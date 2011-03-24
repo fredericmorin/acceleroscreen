@@ -26,7 +26,6 @@ class Screen: public Print {
 private:
 
 	uint8_t posx, posy;
-	uint8_t clear_on_next_char;
 
 	void setup_hardware_spi(void);
 	void setup_timer1_ovf(void);

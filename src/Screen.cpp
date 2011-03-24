@@ -26,7 +26,7 @@
 volatile uint8_t shadowram[SHADOW_SIZE]; // our copy of the display's RAM
 
 Screen::Screen(uint8_t clock, uint8_t latch, uint8_t data, uint8_t enable) : //
-	posx(0), posy(0), clear_on_next_char(0) {
+	posx(0), posy(0) {
 
 	// 13, 10, 11, 9
 	pinMode(latch, OUTPUT);
@@ -51,17 +51,9 @@ void Screen::setCursor(uint8_t posx, uint8_t posy) {
 }
 
 void Screen::write(uint8_t c) {
-	if (c == '\n') {
-		clear_on_next_char = 1;
-	}
 	if (((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')) //
 			|| (c >= '0' && c <= '9') //
 			|| c == ' ') {
-		if (clear_on_next_char) {
-			clear_on_next_char = 0;
-			posx = 0;
-			clear();
-		}
 		putchar_3x5(posx, posy, c);
 		posx += 4;
 	}
