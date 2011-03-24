@@ -6,18 +6,18 @@
 class AnalogReader {
 private:
 	uint8_t _pin;
-	long _from;
-	long _to;
+	int _from;
+	int _to;
 
 public:
 	AnalogReader(uint8_t pin, float from, float to) {
 		_pin = pin;
-		_from = (long) (from * 1024);
-		_to = (long) (to * 1024);
+		_from = (int) (from * 1024);
+		_to = (int) (to * 1024);
 		pinMode(pin, INPUT);
 	}
 
-	long getRaw() const {
+	int getRaw() const {
 		return analogRead(_pin);
 	}
 

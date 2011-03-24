@@ -40,6 +40,27 @@ void setup() {
 	randomSeed(555);
 	analogReference( DEFAULT); // 5V
 
+	screen.setCursor(1, 1);
+	screen << "allo" << endl;
+	delay(200);
+	screen.shiftLeft();
+	delay(50);
+	screen.shiftLeft();
+	delay(50);
+	screen.shiftLeft();
+	delay(50);
+	screen.shiftLeft();
+	delay(50);
+	screen.shiftLeft();
+	delay(50);
+	screen.shiftLeft();
+	delay(50);
+	screen.shiftLeft();
+	delay(50);
+	screen.clear();
+	screen.setCursor(1, 1);
+	screen << "ohhh" << endl;
+
 #if LCDDISPLAY
 	lcd.begin(20, 4);
 	lcd.print("ready");
