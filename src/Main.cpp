@@ -62,31 +62,20 @@ uint16_t loop_exec = 0;
 void loop() {
 	uint32_t now = millis();
 
-	if (now - t1 > t1out) {
+	screen.shiftRight();
+
+#if 0
+	if (now - t1 > 2000 /* ms */) {
 		t1 = now;
 
-		static byte a;
-
-		//screen.clear();
-		//screen.putchar_4x7(11, 0, car);
-		if (a == 4)
-			screen.putchar_3x5(X_MAX - 8, 0, '2');
-		else if (a == 5)
-			screen.putchar_4x7(X_MAX - 8, 0, '8');
-		else
-			screen.drawSprite(X_MAX - 8, 0, a);
-
-		if (++a >= 6)
-			a = 0;
-
 	}
 
-	if (now - t2 > t2out) {
+	if (now - t2 > 200 /* ms */) {
 		t2 = now;
 
-		screen.shiftLeft();
-
+		// screen.shiftLeft();
 	}
+#endif
 
 #if ADC_ENABLE
 	if (now - t3 > t3out) {

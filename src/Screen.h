@@ -10,25 +10,38 @@
 
 #include <stdint.h>
 
-class Screen {
+#include "Print.h"
+#include "Streaming.h"
+
+class Screen: public Print {
 
 private:
+
+	uint8_t posx, posy;
+	uint8_t clear_on_next_char;
+
 	void setup_hardware_spi(void);
 	void setup_timer1_ovf(void);
 
-public:
-	Screen(uint8_t clock, uint8_t latch, uint8_t data, uint8_t enable);
-	void shiftLeft();
-	void shiftRight();
-	void drawSprite(uint8_t x,uint8_t y, uint8_t id);
-	void clear();
-	void plot(uint8_t x, uint8_t y, uint8_t val);
 	void putchar_3x5(uint8_t x, uint8_t y, uint8_t c);
 	void putchar_4x7(uint8_t x, uint8_t y, uint8_t c);
 
-};
+public:
+	Screen(uint8_t clock, uint8_t latch, uint8_t data, uint8_t enable);
 
-/** Singletons **/
-//export Screen screen;
+	virtual void write(uint8_t);
+
+	void clear();
+
+	void setPos(uint8_t posx, uint8_t posy);
+
+	void shiftLeft();
+	void shiftRight();
+
+	void drawSprite(uint8_t x, uint8_t y, uint8_t id);
+
+	void plot(uint8_t x, uint8_t y, uint8_t val);
+
+};
 
 #endif

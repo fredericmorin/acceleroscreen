@@ -23,9 +23,11 @@
 #define __SPI_LATCH_HIGH  PORTB |=  (1 << 2)
 #endif
 
-Screen::Screen(uint8_t clock, uint8_t latch, uint8_t data, uint8_t enable) {
 #define SHADOW_SIZE (8 * panel_count) // 8 row per panel, 1 byte per row
 volatile uint8_t shadowram[SHADOW_SIZE]; // our copy of the display's RAM
+
+Screen::Screen(uint8_t clock, uint8_t latch, uint8_t data, uint8_t enable) : //
+	posx(0), posy(0), clear_on_next_char(0) {
 
 	// 13, 10, 11, 9
 	pinMode(latch, OUTPUT);
@@ -42,6 +44,28 @@ volatile uint8_t shadowram[SHADOW_SIZE]; // our copy of the display's RAM
 	_delay_ms(20);
 	setup_timer1_ovf();
 
+}
+
+void Screen::setPos(uint8_t posx, uint8_t posy) {
+	this->posx = posx;
+	this->posy = posy;
+}
+
+void Screen::write(uint8_t c) {
+	if (c == '\n') {
+		clear_on_next_char = 1;
+	}
+	if (((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')) //
+			|| (c >= '0' && c <= '9') //
+			|| c == ' ') {
+		if (clear_on_next_char) {
+			clear_on_next_char = 0;
+			posx = 0;
+			clear();
+		}
+		putchar_3x5(posx, posy, c);
+		posx += 4;
+	}
 }
 
 void Screen::shiftLeft() {
