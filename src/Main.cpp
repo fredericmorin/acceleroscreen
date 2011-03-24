@@ -47,16 +47,6 @@ void setup() {
 }
 
 uint32_t t1 = 0, t2 = 0, t3 = 0;
-#if LCDDISPLAY
-const uint32_t t2out = 1000 / LCDDISPLAY_REFRESH_RATE;
-#endif
-#if ADC_ENABLE
-const uint32_t t3out = 1000 / ACCEL_READ_RATE;
-uint8_t lastrow = 0xFF, lastcol = 0xFF;
-#endif
-
-const uint32_t t1out = 2000; //ms
-const uint32_t t2out = 200; //ms
 
 uint16_t loop_exec = 0;
 void loop() {
@@ -78,7 +68,8 @@ void loop() {
 #endif
 
 #if ADC_ENABLE
-	if (now - t3 > t3out) {
+	static uint8_t lastrow, lastcol;
+	if (now - t3 > (1000 / ACCEL_READ_RATE /* Hz */)) {
 		t3 = now;
 
 		long row = maplimit(-accx.getInt(), -800, 800, 0, __rows - 1);
@@ -95,7 +86,7 @@ void loop() {
 #endif
 
 #if LCDDISPLAY
-	if (now - t2 > t2out) {
+	if (now - t2 > (1000 / LCDDISPLAY_REFRESH_RATE /* Hz */)) {
 		t2 = now;
 
 		/*
