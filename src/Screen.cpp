@@ -46,7 +46,7 @@ Screen::Screen(uint8_t clock, uint8_t latch, uint8_t data, uint8_t enable) : //
 
 }
 
-void Screen::setPos(uint8_t posx, uint8_t posy) {
+void Screen::setCursor(uint8_t posx, uint8_t posy) {
 	this->posx = posx;
 	this->posy = posy;
 }

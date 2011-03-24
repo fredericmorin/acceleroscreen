@@ -33,7 +33,7 @@ public:
 
 	void clear();
 
-	void setPos(uint8_t posx, uint8_t posy);
+	void setCursor(uint8_t posx, uint8_t posy);
 
 	void shiftLeft();
 	void shiftRight();
