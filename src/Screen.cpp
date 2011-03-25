@@ -174,7 +174,7 @@ void Screen::putchar_4x7(byte x, byte y, uint8_t c) {
 }
 
 inline void Screen::setup_hardware_spi(void) {
-	byte clr;
+	uint8_t clr;
 	// spi prescaler:
 	// SPI2X SPR1 SPR0
 	//   0     0     0    fosc/4
@@ -185,18 +185,20 @@ inline void Screen::setup_hardware_spi(void) {
 	//   1     0     1    fosc/8
 	//   1     1     0    fosc/32
 	//   1     1     1    fosc/64
-	SPCR |= ((1 << SPE) | (1 << MSTR)); // enable SPI as master
-	//SPCR |= ( (1<<SPR1) ); // set prescaler bits
-	SPCR &= ~((1 << SPR1) | (1 << SPR0)); // clear prescaler bits
-	clr = SPSR; // clear SPI status reg
-	clr = SPDR; // clear SPI data reg
-	SPSR |= (1 << SPI2X); // set prescaler bits
-	//SPSR &= ~(1<<SPI2X); // clear prescaler bits
+
+	/* enable SPI as master */
+	SPCR |= (_BV(SPE) | _BV(MSTR));
+	/* clear registers */
+	clr = SPSR;
+	clr = SPDR;
+	/* set prescaler to fosc/2 */
+	SPCR &= ~(_BV(SPR1) | _BV(SPR0));
+	SPSR |= _BV(SPI2X);
 }
 
 // display refresh rate
 #define __TIMER1_MAX 0xFFFF // 16 bit CTR
-const uint32_t timer1_precharge = 0x60;
+#define __TIMER1_PRECHARGE 0x22;
 
 inline void Screen::setup_timer1_ovf(void) {
 	// Arduino runs at 16 Mhz...
@@ -211,21 +213,19 @@ inline void Screen::setup_timer1_ovf(void) {
 	//   1       0      1      /1024
 	//   1       1      0      external clock on T1 pin, falling edge
 	//   1       1      1      external clock on T1 pin, rising edge
-	TCCR1B &= ~((1 << CS11));
-	TCCR1B |= ((1 << CS12) | (1 << CS10));
+	TCCR1B &= ~_BV(CS11);
+	TCCR1B |= (_BV(CS12) | _BV(CS10));
 	//normal mode
-	TCCR1B &= ~((1 << WGM13) | (1 << WGM12));
-	TCCR1A &= ~((1 << WGM11) | (1 << WGM10));
+	TCCR1B &= ~(_BV(WGM13) | _BV(WGM12));
+	TCCR1A &= ~(_BV(WGM11) | _BV(WGM10));
 	//Timer1 Overflow Interrupt Enable
-	TIMSK1 |= (1 << TOIE1);
-	TCNT1 = __TIMER1_MAX - timer1_precharge;
-	// enable all interrupts
-	sei();
+	TIMSK1 |= _BV(TOIE1);
+	TCNT1 = __TIMER1_MAX - __TIMER1_PRECHARGE;
 }
 
 ISR(TIMER1_OVF_vect) {
 	// reset timer
-	TCNT1 = __TIMER1_MAX - timer1_precharge;
+	TCNT1 = __TIMER1_MAX - __TIMER1_PRECHARGE;
 
 	static uint8_t row;
 

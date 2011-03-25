@@ -40,6 +40,7 @@ void setup() {
 	randomSeed(555);
 	analogReference( DEFAULT); // 5V
 
+	sei();
 	screen.setCursor(1, 1);
 	screen << "allo" << endl;
 	delay(200);
