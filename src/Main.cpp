@@ -27,7 +27,6 @@ LiquidCrystal lcd(7, 6, 5, 4, 3, 2);
 
 // config
 #if ADC_ENABLE
-#define ACCEL_READ_RATE    200 // Hz
 AnalogReader accx(2, -8.0, 8.0);
 AnalogReader accy(1, -8.0, 8.0);
 #endif
@@ -41,26 +40,6 @@ void setup() {
 	analogReference( DEFAULT); // 5V
 
 	sei();
-	screen.setCursor(1, 1);
-	screen << "allo" << endl;
-	delay(200);
-	screen.shiftLeft();
-	delay(50);
-	screen.shiftLeft();
-	delay(50);
-	screen.shiftLeft();
-	delay(50);
-	screen.shiftLeft();
-	delay(50);
-	screen.shiftLeft();
-	delay(50);
-	screen.shiftLeft();
-	delay(50);
-	screen.shiftLeft();
-	delay(50);
-	screen.clear();
-	screen.setCursor(1, 1);
-	screen << "ohhh" << endl;
 
 #if LCDDISPLAY
 	lcd.begin(20, 4);
@@ -74,14 +53,7 @@ uint16_t loop_exec = 0;
 void loop() {
 	uint32_t now = millis();
 
-	screen.shiftRight();
-
 #if 0
-	if (now - t1 > 2000 /* ms */) {
-		t1 = now;
-
-	}
-
 	if (now - t2 > 200 /* ms */) {
 		t2 = now;
 
@@ -91,11 +63,22 @@ void loop() {
 
 #if ADC_ENABLE
 	static uint8_t lastrow, lastcol;
-	if (now - t3 > (1000 / ACCEL_READ_RATE /* Hz */)) {
+	if (now - t3 > (1000 / (200 /* Hz */))) {
 		t3 = now;
 
-		long col = maplimit(-accy.getInt(), -1000, 1000, 0, X_MAX);
-		long row = maplimit(accx.getInt(), -1000, 1000, 0, Y_MAX);
+		int ax = -accy.getInt();
+		int ay = accx.getInt();
+
+		if (now - t1 > 20 /* ms */) {
+			t1 = now;
+
+			screen.clear();
+			screen.setCursor(1, 1);
+			screen << _FLOAT(ax/1000.0, 2) << endl;
+		}
+
+		long col = maplimit(ax, -1000, 1000, 0, X_MAX);
+		long row = maplimit(ay, -1000, 1000, 0, Y_MAX);
 
 		if (lastrow != row || lastcol != col) {
 			screen.plot(lastcol, lastrow, 0);
