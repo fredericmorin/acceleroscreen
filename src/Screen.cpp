@@ -53,7 +53,7 @@ void Screen::setCursor(uint8_t posx, uint8_t posy) {
 void Screen::write(uint8_t c) {
 	if (((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')) //
 			|| (c >= '0' && c <= '9') //
-			|| c == ' ') {
+			|| c == ' ' || c == '.') {
 		putchar_3x5(posx, posy, c);
 		posx += 4;
 	}
@@ -112,7 +112,9 @@ void Screen::putchar_3x5(uint8_t x, uint8_t y, uint8_t c) {
 	} else if (c >= '0' && c <= '9') {
 		c = (c - '0') + 27;
 	} else if (c == ' ') {
-		c = 10; // space
+		c = 0; // space
+	} else if (c == '.') {
+		c = 37; // .
 	}
 	for (uint8_t col = 0; col < 3; col++) {
 		dots = pgm_read_byte_near(&font_3x5[c][col]);
