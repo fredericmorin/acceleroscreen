@@ -22,14 +22,10 @@
 #include <avr/pgmspace.h>
 #include <util/delay.h>
 
-#if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
-#ERROR not supported
-#else
-#define __SPI_LATCH_LOW   PORTB &= ~digitalPinToBitMask(10) // effective when low
-#define __SPI_LATCH_HIGH  PORTB |=  digitalPinToBitMask(10)
-#define __SCREEN_ENABLE   PORTB &= ~digitalPinToBitMask(9) // enabled when low
-#define __SCREEN_DISABLE  PORTB |=  digitalPinToBitMask(9)
-#endif
+#define __SPI_LATCH_LOW   PORTB &= ~_BV(PB2) // effective when low, arduino pin 10
+#define __SPI_LATCH_HIGH  PORTB |=  _BV(PB2)
+#define __SCREEN_ENABLE   PORTB &= ~_BV(PB1) // enabled when low, arduino pin 9
+#define __SCREEN_DISABLE  PORTB |=  _BV(PB1)
 
 /**
  * in memory panel organisation
@@ -47,10 +43,9 @@ panel screen_buffer[PANEL_COUNT];
 Screen::Screen() : //
 	posx(0), posy(0) {
 
-	// 13, 10, 11, 9
-	pinMode(SS, OUTPUT);
-	pinMode(SCK, OUTPUT);
-	pinMode(MOSI, OUTPUT);
+	pinMode(SCK, OUTPUT); // clock
+	pinMode(MOSI, OUTPUT); // data out
+	pinMode(SS, OUTPUT); // latch
 	pinMode(9, OUTPUT);
 
 	__SCREEN_ENABLE;

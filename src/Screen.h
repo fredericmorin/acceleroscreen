@@ -17,8 +17,9 @@
 #define PANEL_COUNT_X (4)
 #define PANEL_COUNT_Y (1)
 #define PANEL_COUNT (PANEL_COUNT_X * PANEL_COUNT_Y)
+#define COLS_PER_PANEL (8)
 #define ROWS_PER_PANEL (8)
-#define X_MAX (ROWS_PER_PANEL * PANEL_COUNT_X - 1) // horizontal display size
+#define X_MAX (COLS_PER_PANEL * PANEL_COUNT_X - 1) // horizontal display size
 #define Y_MAX (ROWS_PER_PANEL * PANEL_COUNT_Y - 1) // vertical display size
 
 class Screen: public Print {
