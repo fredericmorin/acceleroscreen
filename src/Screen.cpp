@@ -198,7 +198,7 @@ inline void Screen::setup_hardware_spi(void) {
 
 // display refresh rate
 #define __TIMER1_MAX 0xFFFF // 16 bit CTR
-#define __TIMER1_PRECHARGE 0x22;
+#define __TIMER1_PRECHARGE 0x20;
 
 inline void Screen::setup_timer1_ovf(void) {
 	// Arduino runs at 16 Mhz...

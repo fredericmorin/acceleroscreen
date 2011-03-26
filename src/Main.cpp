@@ -19,7 +19,6 @@
 
 #if LCDDISPLAY
 #define LCDDISPLAY_REFRESH_RATE    10 // Hz
-#define ARDUINO 22
 #include "Streaming.h"
 #include "LiquidCrystal.h"
 LiquidCrystal lcd(7, 6, 5, 4, 3, 2);
@@ -37,7 +36,7 @@ Screen screen(SCK, SS, MOSI, 9); // clk, lat, dat, en
 
 void setup() {
 	randomSeed(555);
-	analogReference( DEFAULT); // 5V
+	analogReference(DEFAULT); // 5V
 
 	sei();
 
@@ -66,9 +65,10 @@ void loop() {
 	if (now - t3 > (1000 / (200 /* Hz */))) {
 		t3 = now;
 
-		int ax = -accy.getInt();
-		int ay = accx.getInt();
+		int ax = -accx.getInt();
+		int ay = -accy.getInt();
 
+#if 0
 		if (now - t1 > 20 /* ms */) {
 			t1 = now;
 
@@ -76,6 +76,7 @@ void loop() {
 			screen.setCursor(1, 1);
 			screen << _FLOAT(ax/1000.0, 2) << endl;
 		}
+#endif
 
 		long col = maplimit(ax, -1000, 1000, 0, X_MAX);
 		long row = maplimit(ay, -1000, 1000, 0, Y_MAX);

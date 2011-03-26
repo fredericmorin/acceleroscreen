@@ -21,7 +21,7 @@ public:
 		return analogRead(_pin);
 	}
 
-	float get() {
+	float get() const {
 		return map(analogRead(_pin), 0, 1023, _from, _to) / 1000.0;
 	}
 
