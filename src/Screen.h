@@ -34,7 +34,7 @@ private:
 	void putchar_4x7(uint8_t x, uint8_t y, uint8_t c);
 
 public:
-	Screen(uint8_t clock, uint8_t latch, uint8_t data, uint8_t enable);
+	Screen();
 
 	virtual void write(uint8_t);
 

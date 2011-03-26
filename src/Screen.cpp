@@ -8,6 +8,7 @@
 #include "Screen.h"
 
 #include "WProgram.h"
+#include "pins_arduino.h"
 
 #include "fonts.h"
 #include "utils.h"
@@ -18,24 +19,26 @@
 #if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
 #ERROR not supported
 #else
-#define __SPI_LATCH_LOW   PORTB &= ~(1 << 2) // 1 -> 10 -> latch
-#define __SPI_LATCH_HIGH  PORTB |=  (1 << 2)
+#define __SPI_LATCH_LOW   PORTB &= ~digitalPinToBitMask(10) // effective when low
+#define __SPI_LATCH_HIGH  PORTB |=  digitalPinToBitMask(10)
+#define __SCREEN_ENABLE   PORTB &= ~digitalPinToBitMask(9) // enabled when low
+#define __SCREEN_DISABLE  PORTB |=  digitalPinToBitMask(9)
 #endif
 
 #define SHADOW_SIZE (8 * panel_count) // 8 row per panel, 1 byte per row
 volatile uint8_t shadowram[SHADOW_SIZE]; // our copy of the display's RAM
 
-Screen::Screen(uint8_t clock, uint8_t latch, uint8_t data, uint8_t enable) : //
+Screen::Screen() : //
 	posx(0), posy(0) {
 
 	// 13, 10, 11, 9
-	pinMode(latch, OUTPUT);
-	pinMode(clock, OUTPUT);
-	pinMode(data, OUTPUT);
-	pinMode(enable, OUTPUT);
+	pinMode(SS, OUTPUT);
+	pinMode(SCK, OUTPUT);
+	pinMode(MOSI, OUTPUT);
+	pinMode(9, OUTPUT);
 
-	digitalWrite(enable, LOW); // active low
-	__SPI_LATCH_HIGH;
+	__SCREEN_ENABLE;
+	__SPI_LATCH_HIGH; // unactive when high
 
 	clear();
 

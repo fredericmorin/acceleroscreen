@@ -32,7 +32,7 @@ AnalogReader accy(1, -8.0, 8.0);
 #if 0
 AnalogReader batt(0, 0, 15.6);
 #endif
-Screen screen(SCK, SS, MOSI, 9); // clk, lat, dat, en
+Screen screen; // clk, lat, dat, en
 
 void setup() {
 	randomSeed(555);
