@@ -218,10 +218,6 @@ inline void Screen::setup_hardware_spi(void) {
 	SPSR |= _BV(SPI2X);
 }
 
-// display refresh rate
-#define __TIMER1_MAX 0xFFFF // 16 bit CTR
-#define __TIMER1_PRECHARGE 0x20;
-
 inline void Screen::setup_timer1_ovf(void) {
 	// Arduino runs at 16 Mhz...
 	// Timer1 (16bit) Settings:
@@ -235,19 +231,37 @@ inline void Screen::setup_timer1_ovf(void) {
 	//   1       0      1      /1024
 	//   1       1      0      external clock on T1 pin, falling edge
 	//   1       1      1      external clock on T1 pin, rising edge
-	TCCR1B &= ~_BV(CS11);
-	TCCR1B |= (_BV(CS12) | _BV(CS10));
-	//normal mode
-	TCCR1B &= ~(_BV(WGM13) | _BV(WGM12));
-	TCCR1A &= ~(_BV(WGM11) | _BV(WGM10));
-	//Timer1 Overflow Interrupt Enable
-	TIMSK1 |= _BV(TOIE1);
-	TCNT1 = __TIMER1_MAX - __TIMER1_PRECHARGE;
+	//
+	uint8_t _sreg = SREG; /* save SREG */
+	cli(); /* disable all interrupts while messing with the register setup */
+
+	/* multiplexed TRUE-RGB PWM mode (quite dim) */
+	/* set prescaler to 256 */
+	TCCR1B |= (_BV(CS12));
+	TCCR1B &= ~(_BV(CS10) | _BV(CS11));
+	/* set WGM mode 4: CTC using OCR1A */
+	TCCR1A &= ~(_BV(WGM10) | _BV(WGM11));
+	TCCR1B |= _BV(WGM12);
+	TCCR1B &= ~_BV(WGM13);
+	/* normal operation - disconnect PWM pins */
+	TCCR1A &= ~(_BV(COM1A1) | _BV(COM1A0) | _BV(COM1B1) | _BV(COM1B0));
+	/* set top value for TCNT1 */
+#define __TRUE_RGB_OCR1A 0x0088
+	OCR1A = __TRUE_RGB_OCR1A;
+	/* enable COMPA isr */
+	TIMSK1 |= _BV(OCIE1A);
+	/* restore SREG with global interrupt flag */
+	SREG = _sreg;
 }
 
-ISR(TIMER1_OVF_vect) {
+//#define __TIMER1_MAX 0xFFFF // 16 bit CTR
+//#define __TIMER1_PRECHARGE 0x010;
+
+ISR(TIMER1_COMPA_vect) {
 	// reset timer
-	TCNT1 = __TIMER1_MAX - __TIMER1_PRECHARGE;
+	//TCNT1 = __TIMER1_MAX - __TIMER1_PRECHARGE;
+
+	//__SCREEN_ENABLE;
 
 	static uint8_t row;
 
@@ -258,9 +272,12 @@ ISR(TIMER1_OVF_vect) {
 	}
 	__SPI_LATCH_HIGH;
 
-	row++; // next time the ISR runs, the next row will be dealt with
+	row++; // dealt with the next row next time the ISR runs
 	if (row >= ROWS_PER_PANEL) {
 		row = 0;
 	}
-}
 
+	//_delay_us(30);
+	//__SCREEN_DISABLE;
+
+}
