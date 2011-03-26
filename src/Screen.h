@@ -14,12 +14,12 @@
 #include "Streaming.h"
 
 // Screen config
-#define panel_count_x (4)
-#define panel_count_y (1)
-#define panel_count (panel_count_x * panel_count_y)
+#define PANEL_COUNT_X (4)
+#define PANEL_COUNT_Y (1)
+#define PANEL_COUNT (PANEL_COUNT_X * PANEL_COUNT_Y)
 #define ROWS_PER_PANEL (8)
-#define X_MAX (8 * panel_count_x - 1) // horizontal display size
-#define Y_MAX (8 * panel_count_y - 1) // vertical display size
+#define X_MAX (ROWS_PER_PANEL * PANEL_COUNT_X - 1) // horizontal display size
+#define Y_MAX (ROWS_PER_PANEL * PANEL_COUNT_Y - 1) // vertical display size
 
 class Screen: public Print {
 
