@@ -52,13 +52,27 @@ uint16_t loop_exec = 0;
 void loop() {
 	uint32_t now = millis();
 
-#if 0
-	if (now - t2 > 200 /* ms */) {
+	if (now - t2 > 1000 /* ms */) {
 		t2 = now;
 
-		// screen.shiftLeft();
-	}
+#if 1
+		screen.clear();
+		screen.setCursor(1, 1);
+		screen << screen.getRefreshRate();
 #endif
+
+#if 0
+		static uint8_t cx;
+
+		screen.clear();
+		for (uint8_t i = 0; i <= Y_MAX; i++) {
+			screen.plot(cx, i, HIGH);
+		}
+
+		if (++cx >= X_MAX)
+		cx = 0;
+#endif
+	}
 
 #if ADC_ENABLE
 	static uint8_t lastrow, lastcol;

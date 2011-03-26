@@ -50,6 +50,8 @@ public:
 
 	void plot(uint8_t x, uint8_t y, uint8_t val);
 
+	uint16_t getRefreshRate();
+
 };
 
 #endif

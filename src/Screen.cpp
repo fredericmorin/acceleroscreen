@@ -254,6 +254,14 @@ inline void Screen::setup_timer1_ovf(void) {
 	SREG = _sreg;
 }
 
+volatile uint16_t refreshcnt = 0;
+
+uint16_t Screen::getRefreshRate() {
+	uint16_t val = refreshcnt;
+	refreshcnt = 0;
+	return val;
+}
+
 //#define __TIMER1_MAX 0xFFFF // 16 bit CTR
 //#define __TIMER1_PRECHARGE 0x010;
 
@@ -275,6 +283,9 @@ ISR(TIMER1_COMPA_vect) {
 	row++; // dealt with the next row next time the ISR runs
 	if (row >= ROWS_PER_PANEL) {
 		row = 0;
+		if (!(refreshcnt == 0xFFFF)) {
+			refreshcnt++;
+		}
 	}
 
 	//_delay_us(30);
