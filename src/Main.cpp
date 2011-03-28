@@ -8,6 +8,7 @@
 #define ADC_ENABLE 1
 
 #include "AnalogReader.h"
+#include "Bounce.h"
 #include "Screen.h"
 #include "utils.h"
 
@@ -21,43 +22,82 @@
 AnalogReader accx(2, -8.0, 8.0);
 AnalogReader accy(1, -8.0, 8.0);
 #endif
-#if 0
-AnalogReader batt(0, 0, 15.6);
-#endif
 Screen screen; // clk, lat, dat, en
+Bounce left = Bounce(2, 100);
+Bounce right = Bounce(3, 100);
 
 void setup() {
 	randomSeed(555);
-	analogReference(DEFAULT); // 5V
+	analogReference( DEFAULT); // 5V
+
+	// setup the input buttons
+	pinMode(2, INPUT);
+	pinMode(3, INPUT);
 
 	sei();
-
 }
 
-uint32_t t1 = 0, t2 = 0, t3 = 0;
+int8_t count = 0;
+
+uint32_t t2 = 0;
+uint32_t t1 = 0, t3 = 0, t4 = 0;
 
 void loop() {
 	uint32_t now = millis();
+
+	if (now - t4 > 10 /* ms */) {
+		t4 = now;
+		if (left.update()) {
+			if (left.fallingEdge()) {
+				count--;
+				t2 = 0;
+			}
+		}
+		if (right.update()) {
+			if (right.fallingEdge()) {
+				count++;
+				t2 = 0;
+			}
+		}
+	}
 
 	if (now - t2 > 1000 /* ms */) {
 		t2 = now;
 
 #if 1
+		// show count
+		screen.clear();
+		screen.setCursor(1, 1);
+		screen << count;
+#endif
+
+#if 0
+		// show display refresh rate
 		screen.clear();
 		screen.setCursor(1, 1);
 		screen << screen.getRefreshRate();
 #endif
 
 #if 0
+		// display line for left to right
 		static uint8_t cx;
 
 		screen.clear();
 		for (uint8_t i = 0; i <= Y_MAX; i++) {
 			screen.plot(cx, i, HIGH);
 		}
+		++cx &= X_MAX;
+#endif
 
-		if (++cx >= X_MAX)
-		cx = 0;
+#if 0
+		// shift to the left
+		static uint8_t row;
+
+		screen.shiftLeft();
+		screen.plot(X_MAX - 1, row, LOW);
+		++row &= Y_MAX;
+		screen.plot(X_MAX - 1, row, HIGH);
+
 #endif
 	}
 
@@ -94,4 +134,3 @@ void loop() {
 #endif
 
 }
-
