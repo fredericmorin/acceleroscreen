@@ -87,22 +87,22 @@ void Screen::clear() {
 /* mid level stuff */
 
 void Screen::shiftLeft() {
-#if 0
-	for (uint8_t panel_x = 0; panel_x < PANEL_COUNT_X; panel_x++) {
-		if (panel_x == 0) {
-			for (uint8_t row = 0; row < ROWS_PER_PANEL; row++) {
-				screen_buffer[row] >>= 1;
-			}
-		} else {
-			uint8_t offset = panel_x * 8;
-			for (uint8_t row = 0; row < ROWS_PER_PANEL; row++) {
-				screen_buffer[offset - 8 + row] |= //
-				(screen_buffer[offset + row] & B00000001) << 7;
-				screen_buffer[offset + row] >>= 1;
+	for (uint8_t panel_y = 0; panel_y < PANEL_COUNT_Y; panel_y++) {
+		for (uint8_t panel_x = 0; panel_x < PANEL_COUNT_X; panel_x++) {
+			uint8_t panel = panel_x + PANEL_COUNT_X * panel_y;
+			if (panel_x == 0) {
+				for (uint8_t row = 0; row < ROWS_PER_PANEL; row++) {
+					screen_buffer[panel].row[row] >>= 1;
+				}
+			} else {
+				for (uint8_t row = 0; row < ROWS_PER_PANEL; row++) {
+					screen_buffer[panel - 1].row[row] |= //
+							(screen_buffer[panel].row[row] & B00000001) << 7;
+					screen_buffer[panel].row[row] >>= 1;
+				}
 			}
 		}
 	}
-#endif
 }
 
 void Screen::shiftRight() {
