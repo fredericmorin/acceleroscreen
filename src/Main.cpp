@@ -5,7 +5,6 @@
  */
 
 // features
-#define LCDDISPLAY 0
 #define ADC_ENABLE 1
 
 #include "AnalogReader.h"
@@ -16,13 +15,6 @@
 #include "pins_arduino.h"
 
 #include <avr/pgmspace.h>
-
-#if LCDDISPLAY
-#define LCDDISPLAY_REFRESH_RATE    10 // Hz
-#include "Streaming.h"
-#include "LiquidCrystal.h"
-LiquidCrystal lcd(7, 6, 5, 4, 3, 2);
-#endif
 
 // config
 #if ADC_ENABLE
@@ -40,15 +32,10 @@ void setup() {
 
 	sei();
 
-#if LCDDISPLAY
-	lcd.begin(20, 4);
-	lcd.print("ready");
-#endif
 }
 
 uint32_t t1 = 0, t2 = 0, t3 = 0;
 
-uint16_t loop_exec = 0;
 void loop() {
 	uint32_t now = millis();
 
@@ -103,34 +90,6 @@ void loop() {
 
 	}
 	screen.plot(lastcol, lastrow, 1);
-#endif
-
-#if LCDDISPLAY
-	if (now - t2 > (1000 / LCDDISPLAY_REFRESH_RATE /* Hz */)) {
-		t2 = now;
-
-		/*
-		 */
-		lcd.setCursor(0, 0);
-		lcd << "x:" << _FLOAT(-accx.get(), 2) << " y:"
-		<< _FLOAT(-accy.get(), 2) << "  ";
-
-		lcd.setCursor(13, 2);
-		lcd << _FLOAT(batt.get(), 2) << "v ";
-
-		static uint8_t t2ctn;
-		t2ctn++;
-		if (t2ctn % 2 == 0) {
-			const uint32_t lo_exec = loop_exec * 1000UL / t2out;
-			lcd.setCursor(0, 2);
-			lcd << _DEC(lo_exec) << " ";
-			t2ctn = 0;
-		}
-		loop_exec = 0;
-
-	}
-
-	loop_exec++;
 #endif
 
 }
