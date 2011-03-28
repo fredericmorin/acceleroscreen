@@ -66,10 +66,11 @@ void loop() {
 	if (now - t3 > (1000 / (200 /* Hz */))) {
 		t3 = now;
 
-		int ax = -accx.getInt();
-		int ay = -accy.getInt();
+		long ax = -accx.getLong();
+		long ay = -accy.getLong();
 
 #if 0
+		// display x gforce value
 		if (now - t1 > 20 /* ms */) {
 			t1 = now;
 
@@ -83,13 +84,13 @@ void loop() {
 		long row = maplimit(ay, -1000, 1000, 0, Y_MAX);
 
 		if (lastrow != row || lastcol != col) {
-			screen.plot(lastcol, lastrow, 0);
+			screen.plot(lastcol, lastrow, LOW);
 			lastrow = row;
 			lastcol = col;
 		}
 
 	}
-	screen.plot(lastcol, lastrow, 1);
+	screen.plot(lastcol, lastrow, HIGH);
 #endif
 
 }

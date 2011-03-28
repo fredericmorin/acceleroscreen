@@ -12,8 +12,8 @@ private:
 public:
 	AnalogReader(uint8_t pin, float from, float to) {
 		_pin = pin;
-		_from = (int) (from * 1024);
-		_to = (int) (to * 1024);
+		_from = (int16_t) (from * 1024);
+		_to = (int16_t) (to * 1024);
 		pinMode(pin, INPUT);
 	}
 
@@ -25,7 +25,7 @@ public:
 		return map(analogRead(_pin), 0, 1023, _from, _to) / 1000.0;
 	}
 
-	int getInt() const {
+	long getLong() const {
 		return map(analogRead(_pin), 0, 1023, _from, _to);
 	}
 
