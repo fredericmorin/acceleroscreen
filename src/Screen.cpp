@@ -46,9 +46,11 @@ Screen::Screen() : //
 	pinMode(SCK, OUTPUT); // clock
 	pinMode(MOSI, OUTPUT); // data out
 	pinMode(SS, OUTPUT); // latch
-	pinMode(9, OUTPUT);
+	pinMode(12, OUTPUT); // enable
 
-	__SCREEN_ENABLE;
+	digitalWrite(12, LOW); // enabled when low
+	//__SCREEN_ENABLE;
+
 	__SPI_LATCH_HIGH; // unactive when high
 
 	clear();
