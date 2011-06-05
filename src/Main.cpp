@@ -22,7 +22,14 @@ AnalogReader accy(3, -8.0, 8.0);
 Screen screen; // clk, lat, dat, en
 Bounce left = Bounce(2, 100);
 Bounce right = Bounce(3, 100);
-App app;
+
+// app
+AppStartup appStartup;
+AppMenu appMenu;
+AppDot appDot;
+
+App* currentApp;
+App* app[3];
 
 void setup() {
 	randomSeed(555);
@@ -32,25 +39,30 @@ void setup() {
 	pinMode(2, INPUT);
 	pinMode(3, INPUT);
 
+	// default app
+	currentApp = &appStartup;
+	app[0] = &appStartup;
+	app[1] = &appMenu;
+	app[2] = &appDot;
+
 	sei();
 }
-
 
 uint32_t t3 = 0, t4 = 0;
 
 void loop() {
 	uint32_t now = millis();
 
-	if (now - t4 > 10 /* ms */) {
+	if (now - t4 > 50 /* ms */) {
 		t4 = now;
 		if (left.update()) {
 			if (left.fallingEdge()) {
-				app.clickLeft();
+				currentApp->onLeftClick();
 			}
 		}
 		if (right.update()) {
 			if (right.fallingEdge()) {
-				app.clickRight();
+				currentApp->onRightClick();
 			}
 		}
 	}
@@ -61,10 +73,11 @@ void loop() {
 		int32_t ax = -accx.getLong();
 		int32_t ay = -accy.getLong();
 
-		app.updateAcc(ax, ay);
+		currentApp->updateAccelValues(ax, ay);
 	}
 
+	currentApp->updateScreen(now);
 
-	app.updateScreen(now);
+	screen.swapBuffer();
 
 }
