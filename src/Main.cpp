@@ -20,7 +20,7 @@
 // config
 #if ADC_ENABLE
 AnalogReader accx(2, -8.0, 8.0);
-AnalogReader accy(1, -8.0, 8.0);
+AnalogReader accy(3, -8.0, 8.0);
 #endif
 Screen screen; // clk, lat, dat, en
 Bounce left = Bounce(2, 100);
