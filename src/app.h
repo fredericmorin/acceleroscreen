@@ -32,9 +32,18 @@ public:
 
 extern App* currentApp;
 extern App* app[];
+enum {
+	APP_STARTUP = 0,
+	APP_MENU,
+	APP_DOT,
+	//
+	APP_COUNT
+};
 
 #include "appStartup.h"
 #include "appMenu.h"
 #include "appDot.h"
+
+extern void init_apps();
 
 #endif // APP_H_

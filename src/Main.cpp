@@ -22,15 +22,6 @@ AnalogReader accy(3, -8.0, 8.0);
 Screen screen; // clk, lat, dat, en
 Bounce left = Bounce(2, 100);
 Bounce right = Bounce(3, 100);
-
-// app
-AppStartup appStartup;
-AppMenu appMenu;
-AppDot appDot;
-
-App* currentApp;
-App* app[3];
-
 void setup() {
 	randomSeed(555);
 	analogReference( DEFAULT); // 5V
@@ -39,11 +30,10 @@ void setup() {
 	pinMode(2, INPUT);
 	pinMode(3, INPUT);
 
+	init_apps();
+
 	// default app
-	currentApp = &appStartup;
-	app[0] = &appStartup;
-	app[1] = &appMenu;
-	app[2] = &appDot;
+	currentApp = app[APP_STARTUP];
 
 	sei();
 }

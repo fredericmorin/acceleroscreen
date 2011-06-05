@@ -22,7 +22,9 @@ public:
 	}
 
 	virtual void updateScreen(uint32_t& now) {
-		if (now - t2 > 40 /* ms */) {
+		static const uint8_t anim_delay = 40;
+
+		if (now - t2 > anim_delay /* ms */) {
 			t2 = now;
 
 			if (firstUpdate) {
@@ -34,7 +36,7 @@ public:
 			}
 		}
 
-		if (now > 2000) {
+		if (now > (anim_delay * (X_MAX + 2))) {
 			screen.clear();
 			currentApp = app[1];
 		}
