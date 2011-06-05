@@ -284,7 +284,7 @@ ISR(TIMER1_COMPA_vect) {
 	}
 	__SPI_LATCH_HIGH;
 
-	row++; // dealt with the next row next time the ISR runs
+	row++; // deal with the next row next time the ISR runs
 	if (row >= ROWS_PER_PANEL) {
 		row = 0;
 		if (!(refreshcnt == 0xFFFF)) {
