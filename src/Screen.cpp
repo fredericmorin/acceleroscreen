@@ -24,8 +24,8 @@
 
 #define __SPI_LATCH_LOW   PORTB &= ~_BV(PB2) // effective when low, arduino pin 10
 #define __SPI_LATCH_HIGH  PORTB |=  _BV(PB2)
-#define __SCREEN_ENABLE   PORTB &= ~_BV(PB1) // enabled when low, arduino pin 9
-#define __SCREEN_DISABLE  PORTB |=  _BV(PB1)
+#define __SCREEN_ENABLE   PORTB &= ~_BV(PB3) // enabled when low, arduino pin 11
+#define __SCREEN_DISABLE  PORTB |=  _BV(PB3)
 
 /**
  * in memory panel organisation
@@ -38,7 +38,12 @@
 struct panel {
 	uint8_t row[ROWS_PER_PANEL];
 };
-panel screen_buffer[PANEL_COUNT];
+enum {
+	READ_BUF = 0,
+	WRITE_BUF,
+	BUF_COUNT
+};
+panel screen_buffer[BUF_COUNT][PANEL_COUNT];
 
 Screen::Screen() : //
 	posx(0), posy(0) {
@@ -48,9 +53,7 @@ Screen::Screen() : //
 	pinMode(SS, OUTPUT); // latch
 	pinMode(12, OUTPUT); // enable
 
-	digitalWrite(12, LOW); // enabled when low
-	//__SCREEN_ENABLE;
-
+	__SCREEN_ENABLE;
 	__SPI_LATCH_HIGH; // unactive when high
 
 	clear();
@@ -58,7 +61,6 @@ Screen::Screen() : //
 	setup_hardware_spi();
 	_delay_ms(20);
 	setup_timer1_ovf();
-
 }
 
 /* low level stuff */
@@ -76,14 +78,18 @@ void Screen::plot(uint8_t x, uint8_t y, uint8_t val) {
 	row = (y & B00000111);
 
 	if (val) { // Modify the shadow memory
-		screen_buffer[panel].row[row] |= bitval;
+		screen_buffer[WRITE_BUF][panel].row[row] |= bitval;
 	} else {
-		screen_buffer[panel].row[row] &= ~bitval;
+		screen_buffer[WRITE_BUF][panel].row[row] &= ~bitval;
 	}
 }
 
 void Screen::clear() {
-	memset(screen_buffer, 0, sizeof(panel) * PANEL_COUNT);
+	memset(screen_buffer[WRITE_BUF], 0, sizeof(panel) * PANEL_COUNT);
+}
+
+void Screen::swapBuffer() {
+	memcpy(screen_buffer[READ_BUF], screen_buffer[WRITE_BUF], sizeof(panel) * PANEL_COUNT);
 }
 
 /* mid level stuff */
@@ -94,13 +100,13 @@ void Screen::shiftLeft() {
 			uint8_t panel = panel_x + PANEL_COUNT_X * panel_y;
 			if (panel_x == 0) {
 				for (uint8_t row = 0; row < ROWS_PER_PANEL; row++) {
-					screen_buffer[panel].row[row] >>= 1;
+					screen_buffer[WRITE_BUF][panel].row[row] >>= 1;
 				}
 			} else {
 				for (uint8_t row = 0; row < ROWS_PER_PANEL; row++) {
-					screen_buffer[panel - 1].row[row] |= //
-							(screen_buffer[panel].row[row] & B00000001) << 7;
-					screen_buffer[panel].row[row] >>= 1;
+					screen_buffer[WRITE_BUF][panel - 1].row[row] |= //
+							(screen_buffer[WRITE_BUF][panel].row[row] & B00000001) << 7;
+					screen_buffer[WRITE_BUF][panel].row[row] >>= 1;
 				}
 			}
 		}
@@ -279,7 +285,7 @@ ISR(TIMER1_COMPA_vect) {
 
 	__SPI_LATCH_LOW;
 	for (uint8_t panel = 0; panel < PANEL_COUNT; panel++) {
-		spi_transfer(~screen_buffer[panel].row[row]);
+		spi_transfer(~screen_buffer[READ_BUF][panel].row[row]);
 		spi_transfer((1 << row));
 	}
 	__SPI_LATCH_HIGH;

@@ -37,6 +37,8 @@ private:
 public:
 	Screen();
 
+	void swapBuffer();
+
 	virtual void write(uint8_t);
 
 	void clear();
