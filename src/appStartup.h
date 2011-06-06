@@ -13,12 +13,18 @@
 class AppStartup: public App {
 private:
 	uint32_t t2;
+	uint32_t ref_time;
 	bool firstUpdate;
 
 public:
 	AppStartup() {
+	}
+
+	virtual void load() {
 		t2 = 0;
 		firstUpdate = true;
+		ref_time = millis();
+		screen.clear();
 	}
 
 	virtual void updateScreen(uint32_t& now) {
@@ -36,9 +42,9 @@ public:
 			}
 		}
 
-		if (now > (anim_delay * (X_MAX + 2))) {
-			screen.clear();
-			currentApp = app[1];
+		if (now > (ref_time + (anim_delay * (X_MAX + 2)))) {
+			currentApp = app[APP_MENU];
+			currentApp->load();
 		}
 	}
 };

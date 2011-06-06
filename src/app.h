@@ -24,6 +24,7 @@ extern Screen screen;
 
 class App {
 public:
+	virtual void load() {}
 	virtual void onLeftClick() {}
 	virtual void onRightClick() {}
 	virtual void updateAccelValues(int32_t& ax, int32_t& ay) {}

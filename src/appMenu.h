@@ -12,7 +12,7 @@
 
 class AppMenu: public App {
 private:
-	static const uint8_t section_last = 6;
+	static const uint8_t section_last = 5;
 
 	int8_t section_id;
 	uint32_t last_update;
@@ -20,7 +20,11 @@ private:
 public:
 	AppMenu() {
 		section_id = 0;
+	}
+
+	virtual void load() {
 		last_update = 0;
+		screen.clear();
 	}
 
 	virtual void onLeftClick() {
@@ -31,8 +35,18 @@ public:
 	}
 
 	virtual void onRightClick() {
-		screen.clear();
-		last_update = 0;
+		switch (section_id) {
+		case 0: {
+			currentApp = app[APP_DOT];
+			currentApp->load();
+			break;
+		}
+		case section_last: {
+			currentApp = app[APP_STARTUP];
+			currentApp->load();
+			break;
+		}
+		}
 	}
 
 	virtual void updateScreen(uint32_t& now) {
@@ -44,14 +58,15 @@ public:
 				screen.plot(0, i, HIGH);
 			}
 			screen.plot(1, section_id, HIGH);
-			screen.setCursor(4, 1);
+			screen.setCursor(3, 1);
+			screen << section_id;
+			screen.setCursor(9, 1);
 
 			switch (section_id) {
-			case 1: {
+			case 0: {
+				screen << "dot";
 				break;
 			}
-			default:
-				screen << section_id;
 			}
 		}
 	}

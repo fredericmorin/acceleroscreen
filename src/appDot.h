@@ -20,10 +20,19 @@ public:
 		t2 = 0;
 	}
 
+	virtual void load() {
+		t2 = 0;
+		screen.clear();
+	}
+
 	virtual void onLeftClick() {
+		currentApp = app[APP_MENU];
+		currentApp->load();
 	}
 
 	virtual void onRightClick() {
+		currentApp = app[APP_MENU];
+		currentApp->load();
 	}
 
 	virtual void updateAccelValues(int32_t& ax, int32_t& ay) {

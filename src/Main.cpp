@@ -34,6 +34,7 @@ void setup() {
 
 	// default app
 	currentApp = app[APP_STARTUP];
+	currentApp->load();
 
 	sei();
 }
