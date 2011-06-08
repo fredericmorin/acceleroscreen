@@ -41,6 +41,16 @@ public:
 			currentApp->load();
 			break;
 		}
+		case 1: {
+			currentApp = app[APP_VALUE];
+			currentApp->load();
+			break;
+		}
+		case 2: {
+			currentApp = app[APP_HIST];
+			currentApp->load();
+			break;
+		}
 		case section_last: {
 			currentApp = app[APP_STARTUP];
 			currentApp->load();
@@ -63,10 +73,18 @@ public:
 			screen.setCursor(9, 1);
 
 			switch (section_id) {
-			case 0: {
-				screen << "dot";
+			case 0:
+				screen << "dot .";
 				break;
-			}
+			case 1:
+				screen << "value";
+				break;
+			case 2:
+				screen << "histo";
+				break;
+			case section_last:
+				screen << "intro";
+				break;
 			}
 		}
 	}

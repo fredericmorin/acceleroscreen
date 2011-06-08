@@ -1,7 +1,7 @@
 /*
  * appDot.h
  *
- *  Created on: 2011-02-19
+ *  Created on: 2011-06-05
  *      Author: fred
  */
 
@@ -31,7 +31,7 @@ public:
 	}
 
 	virtual void onRightClick() {
-		currentApp = app[APP_MENU];
+		currentApp = app[APP_VALUE];
 		currentApp->load();
 	}
 

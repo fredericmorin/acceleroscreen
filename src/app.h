@@ -1,7 +1,7 @@
 /*
  * app.h
  *
- *  Created on: 2011-02-19
+ *  Created on: 2011-06-05
  *      Author: fred
  */
 
@@ -37,6 +37,8 @@ enum {
 	APP_STARTUP = 0,
 	APP_MENU,
 	APP_DOT,
+	APP_VALUE,
+	APP_HIST,
 	//
 	APP_COUNT
 };
@@ -44,6 +46,8 @@ enum {
 #include "appStartup.h"
 #include "appMenu.h"
 #include "appDot.h"
+#include "appValue.h"
+#include "appHist.h"
 
 extern void init_apps();
 
