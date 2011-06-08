@@ -17,8 +17,8 @@
 #include <avr/pgmspace.h>
 
 // config
-AnalogReader accx(2, -8.0, 8.0);
-AnalogReader accy(3, -8.0, 8.0);
+AnalogReader accx(2, -2.5, 2.5);
+AnalogReader accy(3, -2.5, 2.5);
 Screen screen; // clk, lat, dat, en
 Bounce left = Bounce(2, 100);
 Bounce right = Bounce(3, 100);
