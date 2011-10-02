@@ -12,16 +12,13 @@
 
 class AppDot : public App {
 private:
-	uint32_t t2;
 	uint8_t lastrow, lastcol;
 
 public:
 	AppDot() {
-		t2 = 0;
 	}
 
 	virtual void load() {
-		t2 = 0;
 		screen.clear();
 	}
 
@@ -31,8 +28,7 @@ public:
 	}
 
 	virtual void onRightClick() {
-		currentApp = app[APP_VALUE];
-		currentApp->load();
+
 	}
 
 	virtual void updateAccelValues(int32_t& ax, int32_t& ay) {
@@ -47,6 +43,8 @@ public:
 	}
 
 	virtual void updateScreen(uint32_t& now) {
+		screen.plot(X_MAX / 2, 0, HIGH);
+		screen.plot(X_MAX / 2, Y_MAX, HIGH);
 		screen.plot(lastcol, lastrow, HIGH);
 	}
 
