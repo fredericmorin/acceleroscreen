@@ -3,6 +3,9 @@
 
 #include "WProgram.h"
 
+// since we dont over-sample the value, there is remaining garbage left...
+#define DISCARD_2_LSB 1
+
 class AnalogReader {
 private:
 	uint8_t _pin;
@@ -22,11 +25,19 @@ public:
 	}
 
 	inline float get() const {
-		return map(analogRead(_pin), 0, 1023, _from, _to) / 1000.0;
+#if DISCARD_2_LSB
+		return map(analogRead(_pin) >> 2, 0, 255, _from, _to) / 1000.0f;
+#else
+		return map(analogRead(_pin), 0, 1023, _from, _to) / 1000.0f;
+#endif
 	}
 
 	inline int32_t getLong() const {
+#if DISCARD_2_LSB
+		return map(analogRead(_pin) >> 2, 0, 255, _from, _to);
+#else
 		return map(analogRead(_pin), 0, 1023, _from, _to);
+#endif
 	}
 
 };
