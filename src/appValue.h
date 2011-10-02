@@ -48,7 +48,7 @@ public:
 			if (ax < 0)
 				screen.setCursor(1, 1);
 			else
-				screen.setCursor(5, 1);
+				screen.setCursor(4, 1);
 			screen << _FLOAT(ax / 1000.0f, 2) << " g";
 		}
 	}

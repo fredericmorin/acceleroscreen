@@ -162,28 +162,32 @@ void Screen::setCursor(uint8_t posx, uint8_t posy) {
 }
 
 void Screen::write(uint8_t c) {
-	if (putchar_3x5(posx, posy, c)) {
-		posx += 4;
-	}
+	uint8_t width = putchar_3x5(posx, posy, c);
+	posx += width + 1;
 }
 
-bool Screen::putchar_3x5(uint8_t x, uint8_t y, uint8_t c) {
-	uint8_t dots;
+uint8_t Screen::putchar_3x5(uint8_t x, uint8_t y, uint8_t c) {
+	uint8_t width = 3;
 	if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')) {
 		c &= 0x1F; // A-Z maps to 1-26
 	} else if (c >= '0' && c <= '9') {
 		c = (c - '0') + 27;
 	} else if (c == ' ') {
+		return 2;
 		c = 0; // space
 	} else if (c == '.') {
+		width = 1;
 		c = 37;
 	} else if (c == '-') {
+		width = 2;
 		c = 38;
 	} else if (c == ':') {
+		width = 1;
 		c = 39;
 	} else {
-		return false;
+		return 0;
 	}
+	uint8_t dots;
 	for (uint8_t col = 0; col < 3; col++) {
 		dots = pgm_read_byte_near(&font_3x5[c][col]);
 		for (uint8_t row = 0; row < 5; row++) {
@@ -193,11 +197,11 @@ bool Screen::putchar_3x5(uint8_t x, uint8_t y, uint8_t c) {
 				plot(x + col, y + row, 0);
 		}
 	}
-	return true;
+	return width;
 }
 
-bool Screen::putchar_4x7(byte x, byte y, uint8_t c) {
-	uint8_t dots;
+uint8_t Screen::putchar_4x7(byte x, byte y, uint8_t c) {
+	uint8_t width = 3;
 	if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')) {
 		c &= 0x1F; // A-Z maps to 1-26
 	} else if (c >= '0' && c <= '9') {
@@ -206,8 +210,9 @@ bool Screen::putchar_4x7(byte x, byte y, uint8_t c) {
 	} else if (c == ' ') {
 		c = 10; // space
 	} else {
-		return false;
+		return 0;
 	}
+	uint8_t dots;
 	for (uint8_t col = 0; col < 4; col++) {
 		dots = pgm_read_byte_near(&font_4x7[c][col]);
 		for (uint8_t row = 0; row < 7; row++) {
@@ -217,7 +222,7 @@ bool Screen::putchar_4x7(byte x, byte y, uint8_t c) {
 				plot(x + col, y + row, 0);
 		}
 	}
-	return true;
+	return width;
 }
 
 void Screen::drawSprite(uint8_t x, uint8_t y, uint8_t id) {

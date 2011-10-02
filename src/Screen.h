@@ -31,8 +31,8 @@ private:
 	void setup_hardware_spi(void);
 	void setup_timer1_ovf(void);
 
-	bool putchar_3x5(uint8_t x, uint8_t y, uint8_t c);
-	bool putchar_4x7(uint8_t x, uint8_t y, uint8_t c);
+	uint8_t putchar_3x5(uint8_t x, uint8_t y, uint8_t c);
+	uint8_t putchar_4x7(uint8_t x, uint8_t y, uint8_t c);
 
 	void plot_(uint8_t x, uint8_t y, uint8_t val);
 
