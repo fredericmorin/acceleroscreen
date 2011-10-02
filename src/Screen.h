@@ -34,6 +34,8 @@ private:
 	bool putchar_3x5(uint8_t x, uint8_t y, uint8_t c);
 	bool putchar_4x7(uint8_t x, uint8_t y, uint8_t c);
 
+	void plot_(uint8_t x, uint8_t y, uint8_t val);
+
 public:
 	Screen();
 
@@ -51,6 +53,8 @@ public:
 	void drawSprite(uint8_t x, uint8_t y, uint8_t id);
 
 	void plot(uint8_t x, uint8_t y, uint8_t val);
+
+	void line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1);
 
 	uint16_t getRefreshRate();
 

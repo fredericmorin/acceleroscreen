@@ -63,14 +63,7 @@ Screen::Screen() : //
 	setup_timer1_ovf();
 }
 
-/* low level stuff */
-
-void Screen::plot(uint8_t x, uint8_t y, uint8_t val) {
-	// exit if x or y is out of bounds
-	if ((x < 0) || (y < 0) || (x > X_MAX) || (y > Y_MAX)) {
-		return;
-	}
-
+inline void Screen::plot_(uint8_t x, uint8_t y, uint8_t val) {
 	uint8_t panel, row, bitval;
 
 	bitval = 1 << (x & B00000111);
@@ -93,6 +86,50 @@ void Screen::swapBuffer() {
 }
 
 /* mid level stuff */
+
+void Screen::plot(uint8_t x, uint8_t y, uint8_t val) {
+	// exit if x or y is out of bounds
+	if ((x < 0) || (y < 0) || (x > X_MAX) || (y > Y_MAX)) {
+		return;
+	}
+
+	plot_(x, y, val);
+}
+
+void Screen::line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1) {
+	if ((x0 < 0) || (y0 < 0) || (x0 > X_MAX) || (y0 > Y_MAX) || (x1 < 0) || (y1
+			< 0) || (x1 > X_MAX) || (y1 > Y_MAX)) {
+		return;
+	}
+
+	uint8_t dx = abs(x1 - x0);
+	uint8_t dy = abs(y1 - y0);
+	int8_t sx, sy;
+	if (x0 < x1)
+		sx = 1;
+	else
+		sx = -1;
+	if (y0 < y1)
+		sy = 1;
+	else
+		sy = -1;
+	int8_t err = dx - dy;
+
+	while (1) {
+		plot_(x0, y0, 1);
+		if (x0 == x1 && y0 == y1)
+			break;
+		int8_t e2 = 2 * err;
+		if (e2 > -dy) {
+			err = err - dy;
+			x0 = x0 + sx;
+		}
+		if (e2 < dx) {
+			err = err + dx;
+			y0 = y0 + sy;
+		}
+	}
+}
 
 void Screen::shiftLeft() {
 	for (uint8_t panel_y = 0; panel_y < PANEL_COUNT_Y; panel_y++) {
@@ -298,7 +335,7 @@ ISR(TIMER1_COMPA_vect) {
 	row++; // deal with the next row next time the ISR runs
 	if (row >= ROWS_PER_PANEL) {
 		row = 0;
-		if (!(refreshcnt == 0xFFFF)) {
+		if (refreshcnt ^= 0xFFFF) {
 			refreshcnt++;
 		}
 	}
