@@ -10,6 +10,9 @@
 
 #include "app.h"
 
+#include "appBar.h"
+extern AppBar appBar;
+
 class AppMenu: public App {
 private:
 	static const uint8_t section_last = 5;
@@ -51,6 +54,18 @@ public:
 			currentApp->load();
 			break;
 		}
+		case 3: {
+			currentApp = app[APP_BAR];
+			appBar.fill = false;
+			currentApp->load();
+			break;
+		}
+		case 4: {
+			currentApp = app[APP_BAR];
+			appBar.fill = true;
+			currentApp->load();
+			break;
+		}
 		case section_last: {
 			currentApp = app[APP_STARTUP];
 			currentApp->load();
@@ -81,6 +96,12 @@ public:
 				break;
 			case 2:
 				screen << "histo";
+				break;
+			case 3:
+				screen << "bar";
+				break;
+			case 4:
+				screen << "bar fill";
 				break;
 			case section_last:
 				screen << "intro";

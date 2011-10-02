@@ -39,6 +39,7 @@ enum {
 	APP_DOT,
 	APP_VALUE,
 	APP_HIST,
+	APP_BAR,
 	//
 	APP_COUNT
 };
@@ -48,6 +49,7 @@ enum {
 #include "appDot.h"
 #include "appValue.h"
 #include "appHist.h"
+#include "appBar.h"
 
 extern void init_apps();
 

@@ -6,6 +6,7 @@ AppMenu appMenu;
 AppDot appDot;
 AppValue appValue;
 AppHist appHist;
+AppBar appBar;
 
 App* currentApp;
 App* app[APP_COUNT];
@@ -16,4 +17,5 @@ void init_apps() {
 	app[APP_DOT] = &appDot;
 	app[APP_VALUE] = &appValue;
 	app[APP_HIST] = &appHist;
+	app[APP_BAR] = &appBar;
 }

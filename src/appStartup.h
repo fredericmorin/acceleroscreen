@@ -43,7 +43,7 @@ public:
 		}
 
 		if (now > (ref_time + (anim_delay * (X_MAX + 2)))) {
-			currentApp = app[APP_MENU];
+			currentApp = app[APP_BAR];
 			currentApp->load();
 		}
 	}
